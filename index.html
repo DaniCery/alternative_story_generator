@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="it">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Template Responsive con Menu a Tendina</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   </head>
+  
   <body>
     <header>
       <nav>
         <ul class="menu">
           <li><a href="#">Home</a></li>
           <li><a href="#">Chi Siamo</a></li>
-          <li>
-            <a href="#">Prodotti</a>
+          <li><a href="#">Prodotti</a>
             <ul class="submenu">
               <li><a href="#">Prodotti 1</a></li>
               <li><a href="#">Prodotti 2</a></li>
@@ -24,58 +27,54 @@
         </ul>
       </nav>
     </header>
+    
     <main>
       <h1>Benvenuti nel nostro sito</h1>
       <div>
-        <p>
-          Qui potete trovare informazioni sui nostri prodotti e contattarci per
-          ulteriori informazioni.
-        </p>
+        <p>Qui potete trovare informazioni sui nostri prodotti e contattarci per ulteriori informazioni.</p>      
         <h1>ChatGPT Example</h1>
-        <input
-          type="text"
-          id="chat-input"
-          placeholder="Type a message and press Enter"
-        />
+        <input type="text" id="chat-input" placeholder="Type a message and press Enter">
         <p id="response"></p>
       </div>
-    </main>
-    <footer>
-      <p>&copy; 2023 DaniCery</p>
-    </footer>
+      
+      <div>
+        <h1>S&P 500 Real-time Chart</h1>
+        <div id="chart"></div>
+      </div>
 
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script>
-      const API_KEY = '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';
+      <script>
+        const API_KEY = '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';
+        const chatInput = document.getElementById('chat-input');
+        const responseText = document.getElementById('response');
 
-      const chatInput = document.getElementById('chat-input');
-      const responseText = document.getElementById('response');
-
-      chatInput.addEventListener('keypress', async function (event) {
-        if (event.key === 'Enter') {
-          const question = event.target.value;
-          event.target.value = '';
-
-          try {
-            const response = await axios.post(
-              'https://api.openai.com/v1/engines/davinci-codex/completions',
-              {
-                prompt: `Q: ${question}\nA:`,
-                max_tokens: 150,
+        chatInput.addEventListener('keypress', async function(event) {
+          if (event.key === 'Enter') {
+            const question = event.target.value;
+            event.target.value = '';
+            const apiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
+            const response = await fetch(apiUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${API_KEY}`
               },
-              {
-                headers: {
-                  Authorization: `Bearer ${API_KEY}`,
-                },
-              }
-            );
-
-            responseText.textContent = response.data.choices[0].text;
-          } catch (error) {
-            console.error(error);
+              body: JSON.stringify({
+                'prompt': `Q: ${question}\nA:`,
+                'max_tokens': 150
+              })
+            });
+            const responseData = await response.json();
+            responseText.textContent = responseData.choices[0].text;
           }
-        }
-      });
-    </script>
-  </body>
-</html>
+        });
+
+        // Plot real-time chart of S&P 500
+        const apiKey = 'GQJ6I5E6CMACQU5R';
+        const symbol = 'SPY';
+        const interval = '5min';
+        const apiUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=${interval}&apikey=${apiKey}`;
+
+        const layout = {
+          title: 'S&P 500 Real-time Chart',
+          xaxis: {
+            title: 'Time'
