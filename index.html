@@ -27,33 +27,38 @@
     </header>
     <main>
         <h1>Benvenuti nel nostro sito</h1>
-        <p>Qui potete trovare informazioni sui nostri prodotti e contattarci per ulteriori informazioni.</p>
-        
-        <div id="chat-gpt-response"></div>
+        <p>Qui potete trovare informazioni sui nostri prodotti e contattarci per ulteriori informazioni.</p>      
+    
+        <h1>ChatGPT Example</h1>
+        <input type="text" id="chat-input" placeholder="Type a message and press Enter">
+        <p id="response"></p>
             <script>
-              const prompt = 'Hello, how are you today?';
-              const apiKey = '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';
+              const API_KEY = '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';
+              const chatInput = document.getElementById('chat-input');
+              const responseText = document.getElementById('response');
 
-              axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
-                  prompt: prompt,
-                  max_tokens: 100,
-                  n: 1,
-                  stop: "\n",
-                  temperature: 0.7
-              }, {
-                  headers: {
+              chatInput.addEventListener('keypress', async function(event) {
+                if (event.key === 'Enter') {
+                  const question = event.target.value;
+                  event.target.value = '';
+                  const apiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
+                  const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
                       'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${apiKey}`
-                  }
-              })
-              .then(response => {
-                  const answer = response.data.choices[0].text;
-                  document.getElementById('chat-gpt-response').innerText = answer;
-              })
-              .catch(error => {
-                  console.log(error);
+                      'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                      'prompt': `Q: ${question}\nA:`,
+                      'max_tokens': 150
+                    })
+                  });
+                  const responseData = await response.json();
+                  responseText.textContent = responseData.choices[0].text;
+                }
               });
             </script>
+
     </main>
     <footer>
         <p>&copy; 2023 DaniCery</p>
