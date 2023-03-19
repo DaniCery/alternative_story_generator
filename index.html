@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="it">
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,9 +28,35 @@
     <main>
         <h1>Benvenuti nel nostro sito</h1>
         <p>Qui potete trovare informazioni sui nostri prodotti e contattarci per ulteriori informazioni.</p>
+        
+        <div id="chat-gpt-response"></div>
+            <script>
+              const prompt = 'Hello, how are you today?';
+              const apiKey = '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';
+
+              axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
+                  prompt: prompt,
+                  max_tokens: 100,
+                  n: 1,
+                  stop: "\n",
+                  temperature: 0.7
+              }, {
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${apiKey}`
+                  }
+              })
+              .then(response => {
+                  const answer = response.data.choices[0].text;
+                  document.getElementById('chat-gpt-response').innerText = answer;
+              })
+              .catch(error => {
+                  console.log(error);
+              });
+            </script>
     </main>
     <footer>
-        <p>&copy; 2023 Template Responsive con Menu a Tendina</p>
+        <p>&copy; 2023 DaniCery</p>
     </footer>
 </body>
 </html>
