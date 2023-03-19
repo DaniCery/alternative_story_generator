@@ -9,6 +9,7 @@
     <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
   </head>
   
   <body>
@@ -79,3 +80,22 @@
           title: 'S&P 500 Real-time Chart',
           xaxis: {
             title: 'Time'
+          }
+        };
+
+        const chartDiv = document.getElementById('chart');
+
+        function plotStockChart(stockData) {
+          const dates = Object.keys(stockData);
+          const closingPrices = dates.map(date => stockData[date]['4. close']);
+          const chartData = [{ x: dates, y: closingPrices, type: 'scatter' }];
+          Plotly.newPlot(chartDiv, chartData, layout);
+        }
+
+        async function getStockData() {
+          const response = await axios.get(apiUrl);
+          const stockData = response.data['Time Series (5min)'];
+          plotStockChart(stockData);
+        }
+
+        setInterval(getStockData, 5000);
