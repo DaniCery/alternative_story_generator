@@ -1,69 +1,81 @@
 <!DOCTYPE html>
 <html lang="it">
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Template Responsive con Menu a Tendina</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <header>
-        <nav>
-            <ul class="menu">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Chi Siamo</a></li>
-                <li><a href="#">Prodotti</a>
-                    <ul class="submenu">
-                        <li><a href="#">Prodotti 1</a></li>
-                        <li><a href="#">Prodotti 2</a></li>
-                        <li><a href="#">Prodotti 3</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Contatti</a></li>
+      <nav>
+        <ul class="menu">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Chi Siamo</a></li>
+          <li>
+            <a href="#">Prodotti</a>
+            <ul class="submenu">
+              <li><a href="#">Prodotti 1</a></li>
+              <li><a href="#">Prodotti 2</a></li>
+              <li><a href="#">Prodotti 3</a></li>
             </ul>
-        </nav>
+          </li>
+          <li><a href="#">Contatti</a></li>
+        </ul>
+      </nav>
     </header>
     <main>
-        <h1>Benvenuti nel nostro sito</h1>
-        <div>
-            <p>Qui potete trovare informazioni sui nostri prodotti e contattarci per ulteriori informazioni.</p>      
-    
+      <h1>Benvenuti nel nostro sito</h1>
+      <div>
+        <p>
+          Qui potete trovare informazioni sui nostri prodotti e contattarci per
+          ulteriori informazioni.
+        </p>
         <h1>ChatGPT Example</h1>
-        <input type="text" id="chat-input" placeholder="Type a message and press Enter">
+        <input
+          type="text"
+          id="chat-input"
+          placeholder="Type a message and press Enter"
+        />
         <p id="response"></p>
-        </div>
-            <script>
-              const API_KEY = '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';
-              const chatInput = document.getElementById('chat-input');
-              const responseText = document.getElementById('response');
-
-              chatInput.addEventListener('keypress', async function(event) {
-                if (event.key === 'Enter') {
-                  const question = event.target.value;
-                  event.target.value = '';
-                  const apiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
-                  const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${API_KEY}`
-                    },
-                    body: JSON.stringify({
-                      'prompt': `Q: ${question}\nA:`,
-                      'max_tokens': 150
-                    })
-                  });
-                  const responseData = await response.json();
-                  responseText.textContent = responseData.choices[0].text;
-                }
-              });
-            </script>
-
+      </div>
     </main>
     <footer>
-        <p>&copy; 2023 DaniCery</p>
+      <p>&copy; 2023 DaniCery</p>
     </footer>
-</body>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      const API_KEY = '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';
+
+      const chatInput = document.getElementById('chat-input');
+      const responseText = document.getElementById('response');
+
+      chatInput.addEventListener('keypress', async function (event) {
+        if (event.key === 'Enter') {
+          const question = event.target.value;
+          event.target.value = '';
+
+          try {
+            const response = await axios.post(
+              'https://api.openai.com/v1/engines/davinci-codex/completions',
+              {
+                prompt: `Q: ${question}\nA:`,
+                max_tokens: 150,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${API_KEY}`,
+                },
+              }
+            );
+
+            responseText.textContent = response.data.choices[0].text;
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      });
+    </script>
+  </body>
 </html>
