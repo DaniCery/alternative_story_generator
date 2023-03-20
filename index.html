@@ -44,7 +44,7 @@
       </div>
 
      <script>
-        const API_KEY = ${{ secrets.OPENAI_API_KEY }};
+        const API_KEY = process.env.OPENAI_API_KEY;
         const chatInput = document.getElementById('chat-input');
         const responseText = document.getElementById('response');
 
